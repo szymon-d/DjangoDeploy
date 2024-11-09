@@ -1,0 +1,11 @@
+apiVersion: v1  # Wersja API Kubernetes, używana do tworzenia zasobu typu Service
+kind: Service  # Typ zasobu Kubernetes - Service definiuje, jak expose'ować aplikację/pod
+metadata:
+  name: db  # Nazwa tej usługi (Service), która będzie identyfikowana w klastrze
+spec:
+  type: ClusterIP  # Typ usługi: ClusterIP umożliwia dostęp tylko z wnętrza klastra (komunikacja wewnętrzna między podami)
+  ports:
+    - port: 5432  # Port, na którym usługa będzie dostępna w klastrze. 5432 to domyślny port PostgreSQL
+      targetPort: 5432  # Port, na który Kubernetes będzie przekierowywał ruch w kontenerze PostgreSQL (wewnętrzny port PostgreSQL)
+  selector:
+    app: postgres  # Selector dopasowuje etykiety podów. Usługa przekieruje ruch do podów, które mają etykietę "app: postgres"

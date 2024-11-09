@@ -1,0 +1,115 @@
+{% load main_filters %} {% base 'yes' %} {% block content %}
+
+<section class="container__horizontal">
+  <nav class="leftbar">
+    <form id="filters_id" method="get" action="{% url 'home' %}">
+      <div class="leftbar__text">Hashtag</div>
+      <select
+        id="hashtag_id"
+        name="hashtag"
+        class="leftbar__btn leftbar__select"
+      >
+        <option selected></option>
+        {% for hashtag in hashtags %}
+          {% if hashtag.name == filter_hashtag %}
+          <option selected>{{hashtag.name}}</option>
+          {% else %}
+          <option>{{hashtag.name}}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+
+      <div class="leftbar__text">Group</div>
+      <select id="group_id" name="group" class="leftbar__btn leftbar__select">
+        <option selected></option>
+        {% for group in groups %} {% if group.name == filter_group %}
+        <option selected>{{group.name}}</option>
+        {% else %}
+        <option>{{group.name}}</option>
+        {% endif %} {% endfor %}
+      </select>
+
+      <div class="leftbar__text">Project Manager</div>
+      <select
+        id="pm_id"
+        name="project manager"
+        class="leftbar__btn leftbar__select"
+      >
+        <option selected></option>
+        {% for pm in pms %} {% if pm.email == filter_pm %}
+        <option selected>{{pm.email}}</option>
+        {% else %}
+        <option>{{pm.email}}</option>
+        {% endif %} {% endfor %}
+      </select>
+
+      <div class="leftbar__text">Developer</div>
+      <select
+        id="developer_id"
+        name="developer"
+        class="leftbar__btn leftbar__select"
+      >
+        <option selected></option>
+        {% for developer in developers %} {% if developer.email == filter_developer %}
+        <option selected>{{developer.email}}</option>
+        {% else %}
+        <option>{{developer.email}}</option>
+        {% endif %} {% endfor %}
+      </select>
+
+      <button class="leftbar__btn leftbar__btn--bottom" type="submit">
+        Apply filter
+      </button>
+      <button
+        class="leftbar__btn leftbar__btn--bottom"
+        onclick="clear_filters()"
+        type="button"
+      >
+        Clear filter
+      </button>
+      <button
+        class="leftbar__btn leftbar__btn--bottom"
+        onclick="my()"
+        type="button"
+      >
+        Test
+      </button>
+    </form>
+  </nav>
+
+</section>
+
+<script>
+  document
+    .getElementById("search-bar_id")
+    .addEventListener("keyup", function (event) {
+      if (event.key === "Enter") {
+        document.getElementById("search-form_id").submit();
+      }
+    });
+</script>
+
+<script>
+  function clear_filters() {
+    var select = document.getElementById("hashtag_id");
+    select.value = "";
+
+    var select = document.getElementById("pm_id");
+    select.value = "";
+
+    var select = document.getElementById("developer_id");
+    select.value = "";
+
+    var select = document.getElementById("group_id");
+    select.value = "";
+
+    document.getElementById("filters_id").submit();
+  }
+</script>
+
+<script>
+  function redirectToWebsite(website) {
+    window.location.href = website;
+  }
+</script>
+{% endblock %}

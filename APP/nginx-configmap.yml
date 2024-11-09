@@ -1,0 +1,26 @@
+apiVersion: v1  # Wersja API Kubernetes używana do tworzenia zasobu ConfigMap
+kind: ConfigMap  # Typ zasobu Kubernetes, który przechowuje konfigurację jako pary klucz-wartość
+metadata:
+  name: nginx-config  # Nazwa ConfigMap, która będzie używana do odniesienia się do konfiguracji Nginx
+data:
+  default.conf: |  # Nazwa pliku konfiguracji Nginx, który będzie zamontowany w kontenerze
+    server {
+        listen 80;  # Nginx nasłuchuje na porcie 80
+        server_name localhost;  # Domyślna nazwa serwera
+
+        location /static/ {  # Konfiguracja dla serwowania plików statycznych
+            alias /APP/staticfiles/;  # Ścieżka, gdzie Nginx będzie szukać plików statycznych
+        }
+
+        location /media/ {  # Konfiguracja dla serwowania plików medialnych
+            alias /APP/media/;  # Ścieżka, gdzie Nginx będzie szukać plików medialnych
+        }
+
+        location / {  # Konfiguracja przekierowania reszty żądań do aplikacji Django
+            proxy_pass http://django-service:8000;  # Przekierowanie żądań do usługi Django działającej na porcie 8000
+            proxy_set_header Host $host;  # Przekazanie nagłówka Host do serwera aplikacji
+            proxy_set_header X-Real-IP $remote_addr;  # Przekazanie rzeczywistego adresu IP klienta do serwera aplikacji
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  # Przekazanie oryginalnego IP klienta do serwera aplikacji
+            proxy_set_header X-Forwarded-Proto $scheme;  # Przekazanie schematu (http lub https) do serwera aplikacji
+        }
+    }

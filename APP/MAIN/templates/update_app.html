@@ -1,0 +1,231 @@
+{% load main_filters %}
+
+{% base 'no' %}
+
+
+{% block content %}
+
+<main class="registerapp">
+
+    <form method="post" action="{% url 'update-app' pk=app_id %}" enctype="multipart/form-data">
+        {% csrf_token %}
+
+
+        <section class="registerapp_card">
+            <div class="registerapp_card__firstrow">
+                <div>Name</div>
+                <div>{{error_app_name}}</div>
+            </div>
+
+            <input id="name_id" name="name" type="text" placeholder="" value="{{input_name}}" maxlength="20" oninput="check_maxlength(this.id, 'name_counter_id')">
+            <div id="name_counter_id" class="registerapp__textarea_counter">{{input_name|length}}/20</div>
+
+
+        </section>
+
+        <section class="registerapp_card">
+            <div class="registerapp_card__firstrow">
+                <div>Group</div>
+            </div>
+
+            <select class="registerapp__select" name="group">
+                {% for group in groups %}
+                    {% if input_group == group.name %}
+                        <option selected>{{group.name}}</option>
+                    {% else %}
+                        <option>{{group.name}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </section>
+
+        <section class="registerapp_card">
+            <div class="registerapp_card__firstrow">
+                <div>Type</div>
+            </div>
+
+            <select class="registerapp__select" name="type" onchange="app_type(this.value)">
+                {% for type in types %}
+                    {% if input_type == type %}
+                        <option selected>{{type}}</option>
+                    {% else %}
+                        <option>{{type}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </section>
+
+        <section class="registerapp_card">
+            <div class="registerapp_card__firstrow">
+                <div>Version</div>
+            </div>
+
+            <input id="version_id" name="version" type="text" placeholder="" value="{{input_version}}" maxlength="15" oninput="check_maxlength(this.id, 'version_counter_id')">
+            <div id="version_counter_id" class="registerapp__textarea_counter">{{input_version|length}}/15</div>
+        </section>
+
+        <section class="registerapp_card">
+            <div class="registerapp_card__firstrow">
+                <div>Project Manager</div>
+            </div>
+
+            <select class="registerapp__select" name="project manager">
+                {% for pm in pms %}
+                    {% if input_pm == pm.email %}
+                        <option selected>{{pm.email}}</option>
+                    {% else %}
+                        <option>{{pm.email}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </section>
+
+        <section class="registerapp_card">
+            <div class="registerapp_card__firstrow">
+                <div>Developers</div>
+            </div>
+
+            <select class="registerapp__select--multi registerapp__select--higher" name="developers" multiple>
+                {% for dev in developers %}
+                    {% if dev.email in input_developers %}
+                        <option selected>{{dev.email}}</option>
+                    {% else %}
+                        <option>{{dev.email}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </section>
+
+        <section class="registerapp_card">
+            <div class="registerapp_card__firstrow">
+                <div>Hashtags</div>
+                <div>{{error_hashtags}}</div>
+            </div>
+
+            <select class="registerapp__select--multi registerapp__select--higher" name="hashtags" multiple>
+                {% for hashtag in hashtags %}
+                    {% if hashtag.name in input_hashtags %}
+                        <option selected>{{hashtag.name}}</option>
+                    {% else %}
+                        <option>{{hashtag.name}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </section>
+
+        <section class="registerapp_card">
+            <div class="registerapp_card__firstrow">
+                <div>Short description</div>
+                <div>{{error_short_description}}</div>
+            </div>
+
+            <textarea id="short_desc_content_id" name="short_desc" type="text" placeholder="" maxlength="200" oninput="check_maxlength(this.id, 'short_desc_counter_id')">{{input_short_desc}}</textarea>
+            <div id="short_desc_counter_id" class="registerapp__textarea_counter">{{input_short_desc|length}}/200</div>
+        </section>
+
+        <section class="registerapp_card">
+            <div class="registerapp_card__firstrow">
+                <div>Detailed description</div>
+                <div>{{error_detail_description}}</div>
+            </div>
+
+            <textarea id="detail_desc_content_id" name="detail_desc" type="text" placeholder="" maxlength="10000" oninput="check_maxlength(this.id, 'detail_desc_counter_id')">{{input_detail_desc}}</textarea>
+            <div id="detail_desc_counter_id" class="registerapp__textarea_counter">{{input_detail_desc|length}}/10000</div>
+        </section>
+
+        <section class="registerapp_card">
+
+            {% if input_type == 'Desktop' %}
+                <div class="registerapp_card__firstrow">
+                    <div id="app_ref_title_id">Installer</div>
+                    <div id="app_ref_error_id">{{error_ref}}</div>
+                </div>
+
+                <input id="app_ref_id" name="installer" type="file" accept=".exe, .zip, .z" value="{{input_installer}}">
+
+            {% else %}
+                <div class="registerapp_card__firstrow">
+                    <div id="app_ref_title_id">Web address</div>
+                    <div id="app_ref_error_id">{{error_ref}}</div>
+                </div>
+                <input id="app_ref_id" name="url" type="url" placeholder="Provide url to your application">
+
+            {% endif %}
+        </section>
+
+
+        <section class="registerapp_card">
+            <div class="registerapp_card__firstrow">
+                <div>User manual</div>
+                <div>{{error_user_manual}}</div>
+            </div>
+
+            <input id="user_manual_id" name="user_manual" type="file" accept=".pdf, .pptx, .docs">
+        </section>
+
+        <section class="registerapp_card">
+            <div class="registerapp_card__firstrow">
+                <div>Presentation</div>
+                <div>{{error_presentation}}</div>
+            </div>
+
+            <input id="presentation_id" name="presentation" type="file" accept=".pdf, .pptx, .docs">
+        </section>
+
+        <section class="registerapp_card">
+            <div class="registerapp_card__firstrow">
+                <div>Appendix</div>
+                <div>{{error_appendix}}</div>
+            </div>
+
+            <input id="appendix_id" name="appendix" type="file" accept=".pdf, .pptx, .docs">
+        </section>
+
+        <button type="submit" class="registerapp__btn registerapp_card__btn">Register Application</button>
+
+    </form>
+
+</main>
+
+
+<script>
+    function app_type(type) {
+
+
+        var element = document.getElementById("app_ref_id");
+        var title = document.getElementById("app_ref_title_id");
+
+        var error = document.getElementById("app_ref_error_id");
+        error.textContent = "";
+
+        if (type === 'Web') {
+            title.textContent = "Web address";
+            element.name = "url";
+            element.type = "url";
+            element.placeholder = "Provide url to your application";
+        }
+
+        if (type === 'Desktop') {
+            title.textContent = "Installer";
+            element.name = "installer";
+            element.type = "file";
+            element.accept = ".exe, .zip, .z";
+        }
+
+    }
+</script>
+
+<script>
+    function check_maxlength(content_id, counter_id) {
+        console.log(content_id);
+        var content = document.getElementById(content_id);
+        var current_length = content.value.length;
+        var max_length = content.getAttribute("maxlength");
+
+        var counter = document.getElementById(counter_id);
+        counter.textContent = current_length + "/" + max_length;
+
+    }
+</script>
+
+{% endblock %}

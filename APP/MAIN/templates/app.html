@@ -1,0 +1,130 @@
+{% load main_filters %}
+
+{% base 'yes' %}
+
+{% block content %}
+
+    <section class="container__horizontal">
+
+        <nav class="leftbar leftbar--wide">
+
+            <br>
+            <br>
+            <div class="leftbar__header">App info</div>
+
+
+            <!--App group-->
+            <div class="leftbar__infobox">
+                <div class="leftbar__text">Developing group</div>
+                <div class="leftbar__text">{{app.group}}</div>
+            </div>
+
+            <!--App type-->
+            <div class="leftbar__infobox">
+                <div class="leftbar__text">Application type</div>
+                <div class="leftbar__text">{{app.type}}</div>
+            </div>
+
+            <!--App version-->
+            <div class="leftbar__infobox">
+                <div class="leftbar__text">Version</div>
+                <div class="leftbar__text">{{app.version}}</div>
+            </div>
+
+            <!--App release date-->
+            <div class="leftbar__infobox">
+                <div class="leftbar__text">Release date</div>
+                <div class="leftbar__text">{{app.updated|cut_date}}</div>
+            </div>
+
+            <!--App pm-->
+            <div class="leftbar__infobox">
+                <div class="leftbar__text">Project manager</div>
+                <div class="leftbar__text">{{app.pm.email|email2name}}</div>
+            </div>
+
+            <!--App developers -->
+            <div class="leftbar__infobox">
+                <div class="leftbar__text">Developers</div>
+                {% for developer in app.developers.all %}
+                    <div class="leftbar__text">{{developer.email|email2name}}</div>
+                {% endfor %}
+            </div>
+
+        </nav>
+
+        <main class="app">
+
+            <!--App name-->
+            <div class="app__shining-text">{{app.app_name}}</div>
+
+            {% if app.type == "Desktop" %}
+                <a class="app__btn" href="{{app.installer.url}}" download>
+                    <i class="fas fa-download"></i>
+                    <div>Download the application</div>
+                </a>
+            {% else %}
+               <button class="app__btn" onclick="redirectToWebsite('{{app.url|escapejs}}')">
+                    <i class="fas fa-globe"></i>
+                    <div>Go to the application</div>
+                </button>
+            {% endif %}
+
+            <div class="app__header">Description</div>
+            <p class="app__desc">{{app.long_description|linebreaksbr}}</p>
+
+            <hr class="app__hr">
+
+
+            <!--App associations-->
+            <div class="app__header app__header--margintop">Associated technology</div>
+            <div class="app__grid">
+                {% for hashtag in app.hashtags.all %}
+                    <div class="app__griditem">{{hashtag}}</div>
+                {% endfor %}
+            </div>
+
+            <hr class="app__hr">
+
+
+            <!--Additional files-->
+            <div class="app__header app__header--margintop">Additional files to download</div>
+
+            <div class="app__container">
+
+                {% if app.presentation %}
+                    <!--Download presentation button-->
+                    <a class="app__btn app__btn--small" href="{{app.presentation.url}}" download>
+                        <i class="fas fa-download"></i>
+                        <div>Presentation</div>
+                    </a>
+                {% endif%}
+
+
+                {% if app.user_manual %}
+                    <!--Download user manual button-->
+                    <a class="app__btn app__btn--small" href="{{app.user_manual.url}}" download>
+                        <i class="fas fa-download"></i>
+                        <div>User manual</div>
+                    </a>
+                {% endif%}
+
+                {% if app.appendix %}
+                    <!--Download appendix button-->
+                    <a class="app__btn app__btn--small" href="{{app.appendix.url}}" download>
+                        <i class="fas fa-download"></i>
+                        <div>Appendix</div>
+                    </a>
+                {% endif%}
+            </div>
+        </main>
+
+    </section>
+
+<script>
+    function redirectToWebsite(website) {
+        window.location.href = website;
+    }
+</script>
+
+{% endblock %}

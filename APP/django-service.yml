@@ -1,0 +1,12 @@
+apiVersion: v1  # Wersja API Kubernetes, której używamy do definiowania zasobu Service
+kind: Service  # Typ zasobu Kubernetes, w tym przypadku jest to Service, który expose'uje aplikację
+metadata:
+  name: django-service  # Nazwa usługi (Service), która będzie identyfikowana w klastrze
+spec:
+  type: NodePort  # Typ usługi: NodePort expose'uje aplikację na portach węzłów klastra (dostęp z zewnątrz)
+  ports:
+    - port: 8000  # Port, na którym aplikacja Django będzie dostępna z zewnątrz (dla użytkowników)
+      targetPort: 8000  # Port, na którym aplikacja Django działa wewnątrz kontenera (ten sam co w Dockerze)
+      nodePort: 30001  # Port na węźle klastra (np. na twoim komputerze), na którym będzie dostępna aplikacja
+  selector:
+    app: django-app  # Etykieta selektora - Kubernetes używa tego do znalezienia podów, które są częścią aplikacji D

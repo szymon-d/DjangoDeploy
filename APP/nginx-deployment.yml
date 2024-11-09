@@ -1,0 +1,38 @@
+apiVersion: apps/v1  # Wersja API Kubernetes używana do tworzenia zasobu Deployment
+kind: Deployment  # Typ zasobu Kubernetes, który zarządza replikami podów
+metadata:
+  name: nginx  # Nazwa Deploymentu dla Nginx, unikalna w przestrzeni nazw
+spec:
+  replicas: 1  # Liczba replik (instancji Nginx), które Kubernetes powinien uruchomić
+  selector:
+    matchLabels:
+      app: nginx  # Etykieta używana do selekcji podów zarządzanych przez ten Deployment
+  template:  # Szablon definiujący konfigurację każdego z podów w ramach tego Deploymentu
+    metadata:
+      labels:
+        app: nginx  # Etykieta przypisana do każdego nowo utworzonego poda
+    spec:
+      containers:
+      - name: nginx  # Nazwa kontenera
+        image: nginx:latest  # Obraz Dockera z Nginx, używany do uruchomienia serwera proxy
+        imagePullPolicy: Never  # Dodaj to, aby Kubernetes nie próbował pobierać obrazu z rejestru, bedzie probowal go pobrac repo lokalnego
+        ports:
+        - containerPort: 80  # Port, na którym Nginx nasłuchuje wewnątrz kontenera
+        volumeMounts:  # Definicje montowania wolumenów
+        - name: nginx-config  # Nazwa wolumenu z konfiguracją Nginx
+          mountPath: /etc/nginx/conf.d/default.conf  # Ścieżka w kontenerze, gdzie plik konfiguracji zostanie zamontowany
+          subPath: default.conf  # Określa plik z ConfigMap, który ma zostać użyty
+        - name: static-files
+          mountPath: /APP/staticfiles  # Ścieżka w podzie Nginx
+        - name: media-files  # Nazwa wolumenu dla plików medialnych
+          mountPath: /APP/media  # Ścieżka w kontenerze, gdzie będą dostępne pliki medialne
+      volumes:  # Definicje wolumenów
+      - name: nginx-config  # Wolumen przechowujący konfigurację Nginx
+        configMap:
+          name: nginx-config  # Nazwa ConfigMap, która zawiera konfigurację Nginx
+      - name: static-files
+        persistentVolumeClaim:
+          claimName: static-files-pvc
+      - name: media-files
+        persistentVolumeClaim:
+          claimName: media-files-pvc

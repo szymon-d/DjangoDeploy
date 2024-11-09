@@ -1,0 +1,31 @@
+version: '3'
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: your_db_name
+      POSTGRES_USER: your_user
+      POSTGRES_PASSWORD: your_password
+    ports:
+      - "5432:5432"
+  web:
+    build: .
+    volumes:
+      - .:/APP
+    ports:
+      - "8000:8000" #Host (for example my PC) : Container with django app
+    depends_on:
+      - db #It tells docker to run this service before web service
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - static_volume:/APP/staticfiles
+      - media_volume:/APP/media
+    depends_on:
+      - web
+
+volumes:
+  static_volume:  # Definicja wolumenu dla plików statycznych
+  media_volume:  # Definicja wolumenu dla plików medialnych

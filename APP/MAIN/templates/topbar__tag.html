@@ -1,0 +1,36 @@
+<section class="topbar">
+  <!--Icon-->
+  <div class="icon__container">
+    <a href="{% url 'home' %}"><i class="fas fa-home"></i></a>
+    <a href="{% url 'home' %}" onclick="my()"><div>Home</div></a>
+  </div>
+  <!--Icon-->
+  <div class="icon__container">
+    <a href="{% url 'register-app' %}"><i class="fas fa-plus"></i></a>
+    <a href="{% url 'register-app' %}"><div>Register app</div></a>
+  </div>
+  <!--Icon-->
+  <div class="icon__container">
+    <a href="{% url 'user-apps' %}"><i class="fas fa-cogs"></i></a>
+    <a href="{% url 'user-apps' %}"><div>Update app</div></a>
+  </div>
+  <!--Icon-->
+  <div class="icon__container">
+    <a href=""><i class="fas fa-crosshairs"></i></a>
+    <a href=""><div>Request app</div></a>
+  </div>
+
+  {% if show_searchbar == 'yes' %}
+  <form id="search-form_id" method="get" action="{% url 'home' %}">
+    <input
+      id="search-bar_id"
+      name="app"
+      class="topbar__searchbar"
+      type="text"
+      placeholder="Search the application..."
+      value="{{filter_app}}"
+    />
+  </form>
+  {% endif %}
+</section>
+<hr class="topbar__hr" />

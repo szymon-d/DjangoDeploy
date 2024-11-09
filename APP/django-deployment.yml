@@ -1,0 +1,39 @@
+apiVersion: apps/v1  # API Kubernetes używane do tworzenia zasobu Deployment
+kind: Deployment  # Typ zasobu Kubernetes, który zarządza replikami podów
+metadata:
+  name: django-app  # Nazwa Deploymentu
+spec:
+  replicas: 1  # Liczba replik (instancji aplikacji), które Kubernetes powinien uruchomić. Można to dostosować w zależności od potrzeb (np. większa skalowalność).
+  selector:
+    matchLabels:
+      app: django-app  # Wskazuje, że Deployment ma zarządzać podami, które mają etykietę "app: django-app"
+  template:  # Definiuje, jak wygląda szablon dla każdego z podów, które będą tworzone w ramach tego Deploymentu.
+    metadata:
+      labels:
+        app: django-app  # Etykieta "app: django-app", która będzie przypisana do każdego nowo utworzonego poda.
+    spec:
+      containers:
+      - name: django-app  # Nazwa kontenera wewnątrz poda
+        image: django-app:latest  # Obraz Dockera, z którego Kubernetes będzie uruchamiał kontenery. Zastąp to swoją nazwą obrazu.
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000  # Port, na którym aplikacja Django będzie działać wewnątrz kontenera (domyślny port dla Django to 8000)
+        env:
+        - name: DATABASE_URL
+          value: "postgres://your_user:your_password@db:5432/your_db_name"  # Zmienna środowiskowa, która przechowuje URL bazy danych PostgreSQL. Zaktualizuj zgodnie z danymi twojej bazy.
+        - name: DJANGO_SECRET_KEY
+          value: "django-insecure-=v%ot01+s1eedxn@sn3q&=ep=_c!dzsaae98s8x#&%+06&_rr)"  # Zmienna środowiskowa dla klucza tajnego Django. Zaktualizuj tym kluczem, którego używasz w projekcie.
+        - name: DJANGO_DEBUG
+          value: "False"  # Zmienna środowiskowa dla trybu debugowania Django. Zmień na False, gdy przechodzisz na środowisko produkcyjne.
+        volumeMounts:
+          - name: static-files
+            mountPath: /APP/staticfiles  # Ścieżka w podzie Django
+          - name: media-files
+            mountPath: /APP/media
+      volumes:
+        - name: static-files
+          persistentVolumeClaim:
+            claimName: static-files-pvc
+        - name: media-files
+          persistentVolumeClaim:
+            claimName: media-files-pvc

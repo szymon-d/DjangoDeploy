@@ -1,0 +1,34 @@
+
+<div class="applications">
+    {% for app in apps %}
+
+        <!--Set Redirection based on view-->
+        {% if view_name == 'app' %}
+            <a class="card" href="{% url 'app' pk=app.id %}">
+        {% elif view_name == 'update-app' %}
+            <a class="card" href="{% url 'update-app' pk=app.id %}">
+        {% endif %}
+
+            <!--Header-->
+            <div class="card__header">{{app.app_name}}</div>
+
+            <hr class="card__hr ">
+
+            <!--Short descritpion-->
+            <div class="card__desc">
+                <div class="card__text">{{app.short_description}}</div>
+            </div>
+
+            <!--Hastags-->
+            <div class="card__hashtag_container">
+                {% for hashtag in app.hashtags.all %}
+                    <div class="card__hashtag"># {{hashtag}}</div>
+                {% endfor %}
+            </div>
+
+            <!--Short Group-->
+            <div class="card__group">{{app.group}}</div>
+        </a>
+
+    {% endfor %}
+</div>

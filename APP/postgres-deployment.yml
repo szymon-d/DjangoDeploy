@@ -1,0 +1,33 @@
+apiVersion: apps/v1  # Wersja API Kubernetes, która obsługuje zasoby Deployment
+kind: Deployment  # Typ zasobu Kubernetes. Deployment zarządza replikami podów.
+metadata:
+  name: postgres  # Nazwa Deploymentu dla bazy danych PostgreSQL
+spec:
+  replicas: 1  # Liczba replik podów PostgreSQL. Tutaj ustawiona na 1, co oznacza jedną instancję bazy danych.
+  selector:
+    matchLabels:
+      app: postgres  # Kubernetes używa tego, aby znaleźć pody, które mają etykietę "app: postgres"
+  template:
+    metadata:
+      labels:
+        app: postgres  # Etykieta przypisana do podów utworzonych przez ten Deployment. Pody te będą odpowiadać za bazę danych PostgreSQL.
+    spec:
+      containers:
+      - name: postgres  # Nazwa kontenera (jest to nazwa wewnątrz Kubernetes, a nie nazwa obrazu)
+        image: postgres:13  # Obraz Dockera, który zostanie użyty. PostgreSQL w wersji 13.
+        env:
+        - name: POSTGRES_DB
+          value: "your_db_name"  # Nazwa bazy danych, którą PostgreSQL utworzy. Możesz ją zmienić zgodnie z potrzebami.
+        - name: POSTGRES_USER
+          value: "your_user"  # Użytkownik, który zostanie utworzony w PostgreSQL. Zmień na właściwego użytkownika dla aplikacji.
+        - name: POSTGRES_PASSWORD
+          value: "your_password"  # Hasło dla użytkownika PostgreSQL. Zmień na odpowiednie, zgodnie z zasadami bezpieczeństwa.
+        ports:
+        - containerPort: 5432  # Port, na którym PostgreSQL będzie nasłuchiwać. Domyślny port PostgreSQL to 5432.
+        volumeMounts:
+        - name: postgres-data  # Wolumen, który zostanie zamontowany do kontenera, aby przechowywać dane bazy danych.
+          mountPath: /var/lib/postgresql/data  # Ścieżka w kontenerze, gdzie PostgreSQL przechowuje dane bazy danych.
+      volumes:
+      - name: postgres-data  # Definiowanie wolumenu o nazwie "postgres-data", który będzie używany do przechowywania danych.
+        persistentVolumeClaim:
+          claimName: postgres-pvc
