@@ -3,6 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: static-files-pvc
 spec:
+  storageClassName: standard  # Domyślna klasa Storage w GKE
   accessModes:
     - ReadWriteMany
   resources:

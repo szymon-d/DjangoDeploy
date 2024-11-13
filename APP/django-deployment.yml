@@ -19,12 +19,24 @@ spec:
         ports:
         - containerPort: 8000  # Port, na którym aplikacja Django będzie działać wewnątrz kontenera (domyślny port dla Django to 8000)
         env:
-        - name: DATABASE_URL
-          value: "postgres://your_user:your_password@db:5432/your_db_name"  # Zmienna środowiskowa, która przechowuje URL bazy danych PostgreSQL. Zaktualizuj zgodnie z danymi twojej bazy.
+
         - name: DJANGO_SECRET_KEY
-          value: "django-insecure-=v%ot01+s1eedxn@sn3q&=ep=_c!dzsaae98s8x#&%+06&_rr)"  # Zmienna środowiskowa dla klucza tajnego Django. Zaktualizuj tym kluczem, którego używasz w projekcie.
-        - name: DJANGO_DEBUG
-          value: "False"  # Zmienna środowiskowa dla trybu debugowania Django. Zmień na False, gdy przechodzisz na środowisko produkcyjne.
+          valueFrom:
+            secretKeyRef:
+              name: django-secrets
+              key: DJANGO_SECRET_KEY
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: django-secrets
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: django-secrets
+              key: POSTGRES_PASSWORD
+        - name: DATABASE_URL
+          value: "postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@db:5432/$(POSTGRES_DB)"
         volumeMounts:
           - name: static-files
             mountPath: /APP/staticfiles  # Ścieżka w podzie Django

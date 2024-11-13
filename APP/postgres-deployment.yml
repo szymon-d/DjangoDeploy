@@ -17,11 +17,20 @@ spec:
         image: postgres:13  # Obraz Dockera, który zostanie użyty. PostgreSQL w wersji 13.
         env:
         - name: POSTGRES_DB
-          value: "your_db_name"  # Nazwa bazy danych, którą PostgreSQL utworzy. Możesz ją zmienić zgodnie z potrzebami.
+          valueFrom:
+            secretKeyRef:
+              name: django-secrets
+              key: POSTGRES_DB
         - name: POSTGRES_USER
-          value: "your_user"  # Użytkownik, który zostanie utworzony w PostgreSQL. Zmień na właściwego użytkownika dla aplikacji.
+          valueFrom:
+            secretKeyRef:
+              name: django-secrets
+              key: POSTGRES_USER
         - name: POSTGRES_PASSWORD
-          value: "your_password"  # Hasło dla użytkownika PostgreSQL. Zmień na odpowiednie, zgodnie z zasadami bezpieczeństwa.
+          valueFrom:
+            secretKeyRef:
+              name: django-secrets
+              key: POSTGRES_PASSWORD
         ports:
         - containerPort: 5432  # Port, na którym PostgreSQL będzie nasłuchiwać. Domyślny port PostgreSQL to 5432.
         volumeMounts:
